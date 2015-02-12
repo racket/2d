@@ -9,7 +9,7 @@
   (syntax-case stx ()
     [(_ widths heights [(cell ...) rhs ...] ...)
      (let ()
-       
+
        ;; coord-to-content : hash[(list num num) -o> (listof syntax)]
        (define coord-to-content (make-hash))
        
@@ -28,7 +28,9 @@
                 cells))
        
        (define (cell-stx-object cell) 
-         (datum->syntax #f " " cell))
+         (if (hash-has-key? coord-to-content cell)
+             (datum->syntax #f " " (hash-ref coord-to-content cell))
+             #f))
        
        ;; build up the coord-to-content mapping for the 
        ;; boundary cells and build up the pattern-vars table
@@ -56,9 +58,11 @@
                                    (length rhses-lst))
                                   stx
                                   (cell-stx-object (car (syntax-e cells-stx)))))
-            (define pat (car (syntax->list rhses)))
-            (hash-set! pattern-vars (car cells) (bound-vars (parse pat)))
-            (hash-set! coord-to-content (car cells) pat)]))
+            (define pat (car rhses-lst))
+            (hash-set! pattern-vars (car cells) (bound-vars (parse pat)))])
+         (when (pair? rhses-lst)
+           (define pat (car rhses-lst))
+           (hash-set! coord-to-content (car cells) pat)))
        
        ;; build up the coord-to-content mapping for the non-boundary cells
        ;; use the pattern-vars table to build up the let-bindings that
@@ -73,8 +77,7 @@
                                  (format "cell at ~a,~a should not be empty"
                                          (list-ref (car cells) 0)
                                          (list-ref (car cells) 1))
-                                 stx
-                                 (cell-stx-object (car cells))))
+                                 stx))
            (define horizontal-vars (hash-ref pattern-vars (list (list-ref (car cells) 0) 0)))
            (define vertical-vars (hash-ref pattern-vars (list 0 (list-ref (car cells) 1))))
            
