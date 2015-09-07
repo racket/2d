@@ -167,7 +167,7 @@ todo:
            [c1 (in-string eol-string)])
        (define c2 (read-char-or-special peek-port))
        (unless (equal? c1 c2)
-         (error 'unstable/2d/lexer.rkt "got an unexpected char.1 ~s vs ~s" c1 c2)))
+         (error '2d/lexer.rkt "got an unexpected char.1 ~s vs ~s" c1 c2)))
      
      (define the-state (make-state line pos (string-length first-tok-string)))
      (setup-state the-state)
@@ -215,7 +215,7 @@ todo:
              (define error-pos (- (srcloc-position (car (exn:fail:read-srclocs failed)))
                                   base-position)) ;; account for the newline
              (when (< error-pos 0)
-               (error 'unstable/2d/lexer.rkt "got error-pos < 0: ~s ~s" 
+               (error '2d/lexer.rkt "got error-pos < 0: ~s ~s" 
                       (srcloc-position (car (exn:fail:read-srclocs failed)))
                       base-position))
              (define peek-port2 (peeking-input-port port))

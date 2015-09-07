@@ -33,5 +33,5 @@
           (define theirs 
             (or (and proc (proc key #f))
                 (dynamic-require 'syntax-color/racket-lexer 'racket-lexer)))
-          ((dynamic-require 'unstable/2d/lexer '2d-lexer) theirs)]
+          ((dynamic-require '2d/lexer '2d-lexer) theirs)]
          [else (if proc (proc key defval) defval)])))))
