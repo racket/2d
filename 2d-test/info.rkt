@@ -4,7 +4,7 @@
 (define version "1.0")
 (define deps '("base" "2d-lib"))
 (define build-deps '("rackunit-lib"
-                     "options-contract-lib"
+                     "option-contract-lib"
                      "at-exp-lib"
                      "gui-lib"
                      "syntax-color-lib"))
