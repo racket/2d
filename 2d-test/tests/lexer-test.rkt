@@ -3,7 +3,7 @@
          syntax-color/racket-lexer
          syntax-color/scribble-lexer
          syntax-color/lexer-contract
-         unstable/options
+         racket/contract/option
          2d/private/lexer
          racket/port)
 
