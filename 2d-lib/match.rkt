@@ -44,11 +44,29 @@
               (raise-syntax-error '2dmatch "cell at 0,0 must contain two expressions"
                                   (cell-stx-object (car cells))))
             (with-syntax ([(left-x right-x) (generate-temporaries rhses)]
-                          [(left-arg right-arg) rhses])
-              (set! let-bindings (list* #`[right-x right-arg]
-                                        #`[left-x left-arg]
+                          [(first-arg second-arg) rhses])
+              (define-values (col-arg row-arg)
+                (cond [(< (syntax-column #'first-arg)
+                          (syntax-column #'second-arg))
+                       ;; first argument is to the left, first is column
+                       (values #'first-arg #'second-arg)]
+                      [(= (syntax-column #'first-arg)
+                          (syntax-column #'second-arg))
+                       ;; the two are aligned. second has to be below
+                       ;; (otherwise it wouldn't be second), second is column
+                       (unless (> (syntax-line #'second-arg)
+                                  (syntax-line #'first-arg))
+                         (error (format "2dmatch internal error: second is not below first: ~a ~a"
+                                        #'second-arg #'first-arg)))
+                       (values #'second-arg #'first-arg)]
+                      [else
+                       ;; first to the right of second, whatever the line
+                       ;; second is column
+                       (values #'second-arg #'first-arg)]))
+              (set! let-bindings (list* #`[row-x #,row-arg]
+                                        #`[col-x #,col-arg]
                                         let-bindings))
-              (set! main-args #'(left-x right-x)))]
+              (set! main-args #'(row-x col-x)))]
            [(on-boundary? cells)
             (unless (and rhses-lst (= 1 (length rhses-lst)))
               (raise-syntax-error '2dmatch 

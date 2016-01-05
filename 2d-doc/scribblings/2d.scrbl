@@ -205,6 +205,26 @@ See @seclink["Keyboard Shortcuts" #:doc '(lib "scribblings/drracket/drracket.scr
   against each of the patterns in the row row, and then evaluates
   the corresponding @racket[exprs-cell], returning the value of the 
   last expression in that cell.
+
+  Within the top-left cell, the leftmost expression will count as
+  @racket[col-expr], and the rightmost as @racket[row-expr]. In case of a tie
+  (i.e., both expressions start at the same column, but on different lines),
+  the bottommost one will count as @racket[col-expr]. For example, all of
+  these are valid:
+
+  @racketblock[╔═════════════════╗
+               ║col-expr row-expr║
+               ╚═════════════════╝]
+  @racketblock[╔═════════════════╗
+               ║         row-expr║
+               ║col-expr         ║
+               ╚═════════════════╝]
+  @racketblock[╔════════╗
+               ║row-expr║
+               ║col-expr║
+               ╚════════╝]
+
+  @history[#:changed "6.4"]{Made scrutinee parsing more flexible.}
 }
 
 @section{2D Tabular}
