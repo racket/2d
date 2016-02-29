@@ -7,4 +7,4 @@
 (define pkg-desc "Documentation part of \"2d\"")
 (define pkg-authors '(robby))
 
-(define scribblings '(("scribblings/2d.scrbl" () (library))))
+(define scribblings '(("scribblings/2d.scrbl" () ("Syntax Extensions"))))
