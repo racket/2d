@@ -231,46 +231,43 @@ todo:
                        [else
                         ;; drop replace specials with spaces
                         (cons #\space (loop (- n 1)))])]))))
-             (cond
-               
-               [else
+
+             ;; pull the newline out of peek-port2
+             (for ([x (in-range (string-length eol-string))]) (read-char-or-special peek-port2))
                 
-                ;; pull the newline out of peek-port2
-                (for ([x (in-range (string-length eol-string))]) (read-char-or-special peek-port2))
-                
-                (define before-token (list (pull-chars error-pos)
-                                           'no-color
-                                           #f
-                                           (+ base-position 1)
-                                           (+ base-position 1 error-pos)))
-                (define end-of-table-approx
-                  (let ([peek-port3 (peeking-input-port peek-port2)])
-                    (port-count-lines! peek-port3)
-                    (define (read-line/check-double-barred)
-                      (let loop ([found-double-barred? #f])
-                        (define c (read-char-or-special peek-port3))
-                        (cond
-                          [(or (equal? c #\n) (eof-object? c))
-                           found-double-barred?]
-                          [else (loop (or found-double-barred?
-                                          (member c double-barred-chars)))])))
-                    (let loop ()
-                      (define found-double-barred? (read-line/check-double-barred))
-                      (cond
-                        [found-double-barred?
-                         (loop)]
-                        [else
-                         (define-values (line col pos) (port-next-location peek-port3))
-                         pos]))))
-                (define after-token
-                  (list (pull-chars (- end-of-table-approx 1))
-                        'error
-                        #f
-                        (+ base-position 1 error-pos)
-                        (+ base-position 1 error-pos end-of-table-approx -1)))
-                (if (zero? error-pos)
-                    (list newline-token after-token)
-                    (list newline-token before-token after-token))])]
+             (define before-token (list (pull-chars error-pos)
+                                        'no-color
+                                        #f
+                                        (+ base-position 1)
+                                        (+ base-position 1 error-pos)))
+             (define end-of-table-approx
+               (let ([peek-port3 (peeking-input-port peek-port2)])
+                 (port-count-lines! peek-port3)
+                 (define (read-line/check-double-barred)
+                   (let loop ([found-double-barred? #f])
+                     (define c (read-char-or-special peek-port3))
+                     (cond
+                       [(or (equal? c #\n) (eof-object? c))
+                        found-double-barred?]
+                       [else (loop (or found-double-barred?
+                                       (member c double-barred-chars)))])))
+                 (let loop ()
+                   (define found-double-barred? (read-line/check-double-barred))
+                   (cond
+                     [found-double-barred?
+                      (loop)]
+                     [else
+                      (define-values (line col pos) (port-next-location peek-port3))
+                      pos]))))
+             (define after-token
+               (list (pull-chars (- end-of-table-approx 1))
+                     'error
+                     #f
+                     (+ base-position 1 error-pos)
+                     (+ base-position 1 error-pos end-of-table-approx -1)))
+             (if (zero? error-pos)
+                 (list newline-token after-token)
+                 (list newline-token before-token after-token))]
             [else
              
              (define lhses (close-cell-graph cell-connections 
