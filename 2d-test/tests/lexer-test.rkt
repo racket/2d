@@ -367,3 +367,23 @@
    ("    ║\n╚═══╝" error #f 20 31 20)
    (,eof eof #f #f #f 0)))
 
+(check-equal?
+ (run-lexer "#2dwhatever\n"
+            "╔════╦════╗\n"
+            "║123;║5678║\n"
+            "╚════╩════╝\n")
+ `(("#2dwhatever" hash-colon-keyword #f 1 12 0)
+   ("\n" white-space #f 12 13 12)
+   ("╔════╦════╗" parenthesis #f 13 24 13)
+   (" " white-space #f 24 25 24)
+   ("║" parenthesis #f 25 26 25)
+   ("123" constant #f 26 29 26)
+   (" " comment #f 29 30 29)
+   ("║" parenthesis #f 30 31 30)
+   ("5678" constant #f 31 35 31)
+   ("║" parenthesis #f 35 36 35)
+   (" " white-space #f 36 37 36)
+   ("╚════╩════╝" parenthesis #f 37 48 37)
+   ("\n" white-space #f 48 49 0)
+   (,eof eof #f #f #f 0)))
+

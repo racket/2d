@@ -39,24 +39,18 @@ todo:
        ;; 'val' -- it isn't necessary for correct operation, but
        ;; helps find bugs earlier
        (define (check-char i c2)
-         ;; here we want to check to make sure we're in sync, but:
-         
-         ;; 1) some lexers don't return strings (or return strings
-         ;;    of the wrong sizes); these will be non-strings here
-         (when (string? val)
-           ;; 2) whitespace is not always right
-           ;;    (the ones outside the table, 
-           ;;    specifically, are always just spaces)
-           (unless (eq? tok 'white-space)
-             
-             ;; 3) sometimes we get specials in the port
-             (when (char? c2)
-
-               (define c1 (string-ref val i))
-               (unless (equal? c1 c2)
-                 (error '2d/lexer.rkt "expected a ~s, got ~s while feeding token ~s" 
-                        c1 c2 
-                        (car (2d-lexer-state-pending-tokens a-2d-lexer-state))))))))
+         ;; here we want to check to make sure we're in sync, but
+         ;; we cannot count on the lexers to return the same strings
+         ;; as we saw in the port in general. So, instead we check only
+         ;; when the token is a parenthesis and the characters are
+         ;; the double-barred chars (since we made that token)
+         (when (and (equal? tok 'parenthesis)
+                    (regexp-match? all-double-barred-chars-regexp val))
+           (define c1 (string-ref val i))
+           (unless (equal? c1 c2)
+             (error '2d/lexer.rkt "expected a ~s, got ~s while feeding token ~s" 
+                    c1 c2 
+                    (car (2d-lexer-state-pending-tokens a-2d-lexer-state))))))
        
        ;; actually read the characters in
        (define last-i (- end start))
@@ -114,6 +108,9 @@ todo:
 (define double-barred-chars-regexp
   (regexp
    (format "[~a]" (apply string double-barred-chars))))
+(define all-double-barred-chars-regexp
+  (regexp
+   (format "^[~a]*$" (apply string double-barred-chars))))
 
 (define (call-chained-lexer uniform-chained-lexer port offset a-2d-lexer-state)
   (define-values (a b c d e f new-mode) 
