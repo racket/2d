@@ -1,7 +1,7 @@
 #lang info
 
 (define collection "2d")
-(define version "1.0")
+(define version "1.1")
 (define deps '("base"
                "scribble-lib"
                "syntax-color-lib"))

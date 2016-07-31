@@ -2,7 +2,7 @@
 
 (define collection "2d")
 (define version "1.0")
-(define deps '("base" "2d-lib"))
+(define deps '("base" "2d-lib" "racket-index"))
 (define build-deps '("rackunit-lib"
                      "option-contract-lib"
                      "at-exp-lib"

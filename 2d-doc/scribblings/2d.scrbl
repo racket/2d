@@ -2,8 +2,10 @@
 @(require scribble/base
           scribble/manual
           scribble/core
+          scribble/example
           (for-label 2d/cond
                      2d/match
+                     syntax-color/lexer-contract
                      racket/file
                      racket/contract
                      racket/base))
@@ -11,7 +13,9 @@
 @title[#:tag "2d"]{2D Syntax}
 
 @defmodulelang[2d]{The @racketmodname[2d] language installs
-@litchar{#2d} reader support in the readtable, and then chains to the reader of
+@litchar{#2d} reader support in the
+@tech[#:doc '(lib "scribblings/reference/reference.scrbl")]{readtables},
+and then chains to the reader of
 another language that is specified immediately after
 @racketmodname[2d].}
 
@@ -267,3 +271,79 @@ See @seclink["Keyboard Shortcuts" #:doc '(lib "scribblings/drracket/drracket.scr
   columns (as @litchar{#2d} syntax requires that the first row contain
   a cell for each column that appears in the table).
 }
+
+@section{2D Readtable}
+
+@defmodule[2d/readtable]
+
+@defproc[(make-readtable) readtable?]{
+ Builds a @racket[readtable?] that recognizes @litchar{#2d} and turns it into
+ a parenthesized form as discussed in @secref["2d"].
+}
+
+@defproc[(2d-readtable-dispatch-proc
+          [char char?]
+          [port input-port?]
+          [source any/c]
+          [line (or/c exact-positive-integer? #f)]
+          [column (or/c exact-nonnegative-integer? #f)]
+          [position (or/c exact-positive-integer? #f)]
+          [/recursive (-> input-port? any/c (or/c readtable? #f) any/c)]
+          [readtable (or/c #f readtable?)])
+         any/c]{
+ The function that implements @racket[make-readtable]'s functionality. The
+ @racket[/recursive] function is used to handle the content in the cells.
+
+ See the docs
+ on @tech[#:doc '(lib "scribblings/reference/reference.scrbl")]{readtables} for more information.
+}
+
+@section{2d Lexer}
+
+@defmodule[2d/lexer]
+
+@defproc[(2d-lexer [sub lexer/c]) lexer/c]{
+ Constructs a @racket[lexer/c] given one that handles
+ lexing inside the cells.
+}
+
+@section{2D Direction Chars}
+
+@defmodule[2d/dir-chars]
+
+@(define 2dchars-eval (make-base-eval '(require 2d/dir-chars)))
+
+This library provides definitions of the characters that are looked for when
+parsing 2d syntax.
+
+@(define-syntax-rule
+   (doc-chars id . stuff)
+   (begin
+     @(defthing id (listof char?) . stuff)
+     @examples[#:label #f #:eval 2dchars-eval id]))
+
+@doc-chars[adjustable-chars]{
+  These are the characters that are considered either to be part of 2d rectangle
+  or characters that could be part of one, possibly fixed by up a DrRacket keybinding.
+}
+
+@doc-chars[double-barred-chars]{
+ These are all of the @racket[adjustable-chars], except those that are regular ASCII.
+}
+
+@doc-chars[up-chars]{
+ All of the 2d chars that connect to the line above.
+}
+
+@doc-chars[dn-chars]{
+ All of the 2d chars that connect to the line below.
+}
+
+@doc-chars[lt-chars]{
+ All of the 2d chars that connect to the next char.
+}
+
+@doc-chars[rt-chars]{
+ All of the 2d chars that connect to the previous char.
+}
+
