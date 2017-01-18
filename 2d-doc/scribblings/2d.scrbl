@@ -340,10 +340,10 @@ parsing 2d syntax.
 }
 
 @doc-chars[lt-chars]{
- All of the 2d chars that connect to the next char.
+ All of the 2d chars that connect to the previous char.
 }
 
 @doc-chars[rt-chars]{
- All of the 2d chars that connect to the previous char.
+ All of the 2d chars that connect to the next char.
 }
 
