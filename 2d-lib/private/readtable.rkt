@@ -132,7 +132,7 @@ example uses:
                               /recursive)]))]
     [else
      (/recursive 
-      (input-port-append #f (open-input-string "#2") port)
+      (input-port-append #f (open-input-string "#2") port #:name (object-name port))
       #f
       previous-readtable)]))
 
