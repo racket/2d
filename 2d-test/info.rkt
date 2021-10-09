@@ -10,3 +10,6 @@
                      "syntax-color-lib"))
 (define pkg-desc "tests for \"2d\"")
 (define pkg-authors '(robby))
+
+(define license
+  '(Apache-2.0 OR MIT))

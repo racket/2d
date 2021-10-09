@@ -6,3 +6,6 @@
 (define implies '("2d-lib" "2d-doc"))
 (define pkg-desc "2d syntax")
 (define pkg-authors '(robby))
+
+(define license
+  '(Apache-2.0 OR MIT))
