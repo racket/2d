@@ -11,3 +11,6 @@
 (define pkg-authors '(robby))
 
 (define scribblings '(("scribblings/2d.scrbl" () ("Syntax Extensions"))))
+
+(define license
+  '(Apache-2.0 OR MIT))

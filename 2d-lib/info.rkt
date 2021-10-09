@@ -7,3 +7,6 @@
                "syntax-color-lib"))
 (define pkg-desc "Implementation (no documentation) part of \"2d\"")
 (define pkg-authors '(robby))
+
+(define license
+  '(Apache-2.0 OR MIT))
