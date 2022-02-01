@@ -14,7 +14,7 @@ todo:
 
 |#
 
-(provide (contract-out [2d-lexer (-> lexer/c lexer/c)])
+(provide (contract-out [2d-lexer (-> lexer*/c lexer*/c)])
          cropped-regions)
 
 (define (2d-lexer chained-lexer)
